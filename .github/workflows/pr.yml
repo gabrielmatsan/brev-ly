@@ -1,0 +1,117 @@
+name: PR check
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "server/**"
+      - ".github/workflows/**"
+    types: [opened, synchronize, reopened]
+
+env:
+  AWS_REGION: us-east-1
+
+jobs:
+  code-quality:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "pnpm"
+          cache-dependency-path: "server/pnpm-lock.yaml"
+
+      - name: Install dependencies
+        working-directory: ./server
+        run: pnpm install
+
+      - name: Build server
+        working-directory: ./server
+        run: pnpm build
+
+      # TODO: Add tests
+      - name: Run tests
+        working-directory: ./server
+        run: |
+          echo "No tests"
+          #pnpm run test
+
+      # TODO: Add lint
+      - name: Run lint
+        working-directory: ./server
+        run: |
+          echo "No lint"
+          #pnpm run lint
+
+  docker-security:
+    name: Docker build & security scan
+    runs-on: ubuntu-latest
+    needs: code-quality
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: setup docker
+        uses: docker/setup-buildx-action@v3
+
+      - name: tag generate
+        id: tag
+        run: |
+          SHA=$(echo $GITHUB_SHA | head -c7)
+          echo "sha=$SHA" >> $GITHUB_OUTPUT
+
+      - name: Build Docker image
+        id: build
+        uses: docker/build-push-action@v6
+        with:
+          context: ./server
+          load: true
+          push: false
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          tags: |
+            pr-check:${{ steps.tag.outputs.sha }}
+            pr-check:latest
+
+      - name: Verify Docker build
+        run: |
+          echo "✅ Docker image built successfully"
+          docker images pr-check:latest
+          echo "Image ID: ${{ steps.build.outputs.imageid }}"
+
+          # Trivy é executado, buscando vulnerabilidades na imagem carregada no Docker local
+      - name: Run Trivy vulnerability scanner
+        id: trivy-scan
+        uses: aquasecurity/trivy-action@0.32.0
+        with:
+          image-ref: ${{ steps.build.outputs.imageid }}
+          format: "table"
+          ignore-unfixed: true
+          vuln-type: "os,library"
+          severity: "CRITICAL,HIGH,MEDIUM,LOW"
+
+      - name: Run Trivy for SARIF report
+        uses: aquasecurity/trivy-action@0.32.0
+        with:
+          image-ref: ${{ steps.build.outputs.imageid }}
+          format: "sarif"
+          output: "trivy-results.sarif"
+          ignore-unfixed: true
+          vuln-type: "os,library"
+          severity: "CRITICAL,HIGH,MEDIUM,LOW"
+
+      - name: Upload Trivy scan results to GitHub Security
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with:
+          sarif_file: "trivy-results.sarif"
