@@ -3,7 +3,7 @@ import { z } from "zod";
 // Schema do Link baseado na API
 export const linkSchema = z.object({
   id: z.string(),
-  originalUrl: z.string().url(),
+  originalUrl: z.url(),
   shortUrl: z.string(),
   visits: z.number(),
   createdAt: z.string().or(z.date()),
@@ -13,7 +13,7 @@ export type Link = z.infer<typeof linkSchema>;
 
 // Schema para criar um link
 export const createLinkSchema = z.object({
-  originalUrl: z.string().url("URL deve ser válida"),
+  originalUrl: z.url(),
   shortUrl: z.string().min(1, "URL encurtada é obrigatória"),
 });
 
