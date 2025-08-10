@@ -4,7 +4,7 @@ import fastifySwagger from '@fastify/swagger';
 import fastifySwaggerUi from '@fastify/swagger-ui';
 import fastify from "fastify";
 import { hasZodFastifySchemaValidationErrors, serializerCompiler, validatorCompiler, type ZodTypeProvider } from "fastify-type-provider-zod";
-import { linkController } from './link/infra/link.controller';
+import { appRoutes } from './app.routes';
 import { env } from './shared/env';
 import { transformSwaggerSchema } from './utils/transform-swagger-schema-data';
 
@@ -62,8 +62,15 @@ app.register(fastifyCors, {
   allowedHeaders: ['Content-Type', 'Authorization'],
 })
 
-app.register(linkController)
+app.register(appRoutes, {
+  prefix: '/v1'
+})
 
+app.get('/health', (_, reply) => {
+  return reply.status(200).send({
+    message: 'OK'
+  })
+})
 
 
 app.listen({
