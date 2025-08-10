@@ -89,10 +89,6 @@ export function Home() {
           <p className="text-gray-600 mb-4">
             Não foi possível conectar com o servidor.
           </p>
-          <p className="text-sm text-gray-500 mb-4">
-            Verifique se a API está rodando em{" "}
-            {process.env.VITE_BACKEND_URL || "http://localhost:8080"}
-          </p>
           <button
             onClick={() => window.location.reload()}
             className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
