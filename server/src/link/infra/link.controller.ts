@@ -154,7 +154,6 @@ export const linkController: FastifyPluginAsyncZod = async app => {
   }, async (request, reply) => {
     const { url } = request.params
 
-
     const result = await getOriginalUrlByShortUrl({
       url
     })
@@ -162,8 +161,9 @@ export const linkController: FastifyPluginAsyncZod = async app => {
     if (isLeft(result)) {
       const error = unwrapEither(result)
 
-      return reply.code(error.statusCode).send({
-        message: error.message
+      console.error(error)
+      return reply.code(error.statusCode ?? 500).send({
+        message: error.message ?? 'Internal Server Error'
       })
     }
 
@@ -183,27 +183,33 @@ export const linkController: FastifyPluginAsyncZod = async app => {
         200: z.object({
           message: z.string(),
         }),
+        404: z.object({
+          message: z.string(),
+        }),
+        500: z.object({
+          message: z.string(),
+        })
       }
     }
   }, async (request, reply) => {
     const { urlId } = request.params
 
     const result = await deleteShorterLink({
-      shorterLink: urlId,
+      id: urlId,
     })
-
 
     if (isLeft(result)) {
       const error = unwrapEither(result)
+      console.error(error)
 
-      return reply.code(error.statusCode).send({
-        message: error.message
+      return reply.code(error.statusCode ?? 500).send({
+        message: error.message ?? 'Internal Server Error'
       })
     }
-
 
     return reply.code(200).send({
       message: 'Link deleted successfully',
     })
+
   })
 }

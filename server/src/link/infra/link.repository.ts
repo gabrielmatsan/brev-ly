@@ -13,7 +13,6 @@ interface UpdateLinkRecord {
 // biome-ignore lint/complexity/noStaticOnlyClass: <classe estática>
 export class LinkRepository {
   static async create(link: Omit<Link, "id" | "createdAt" | "updatedAt" | "visits">): Promise<Link> {
-    // O método returning() retorna um array de resultados, então precisamos pegar o primeiro elemento
     const [createdLink] = await db.insert(linkSchema).values({ ...link }).returning();
 
     return createdLink;

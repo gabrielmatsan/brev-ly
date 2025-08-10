@@ -21,9 +21,8 @@ export async function createShorterLink(input: CreateShorterLinkInput): Promise<
   if (!shortUrlCandidate) {
     shortUrlCandidate = generateId('alphanumeric')
   }
-  shortUrlCandidate = `${env.FRONTEND_URL}/${shortUrlCandidate}`
 
-
+  // Salvar apenas a parte encurtada, não a URL completa
   const isShortUrlAvailable = await LinkRepository.findByShortUrl(shortUrlCandidate)
 
   if (isShortUrlAvailable) {
@@ -36,5 +35,4 @@ export async function createShorterLink(input: CreateShorterLinkInput): Promise<
   })
 
   return makeRight(link)
-
 }
