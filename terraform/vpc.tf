@@ -7,7 +7,7 @@ module "vpc" {
 
   azs = ["${var.aws_region}1", "${var.aws_region}2"] # 2 AZs na região (1a e 2a)
 
-  private_subnets = ["10.0.1.0/24", "10.0.2.0/24"] # 2 subnets privadas
+  private_subnets = ["10.0.1.0/24", "10.0.2.0/24"]     # 2 subnets privadas
   public_subnets  = ["10.0.101.0/24", "10.0.102.0/24"] # 2 subnets públicas
 
   enable_nat_gateway = true
