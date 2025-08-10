@@ -75,4 +75,12 @@ export class LinkRepository {
 
     return updatedLink;
   }
+
+  static async delete(id: string, tx?: Transaction): Promise<Link | null> {
+    const dbConnection = tx ?? db
+
+    const [deletedLink] = await dbConnection.delete(linkSchema).where(eq(linkSchema.id, id)).returning();
+
+    return deletedLink;
+  }
 }

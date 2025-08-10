@@ -5,12 +5,12 @@ import { isLeft, unwrapEither } from "../../shared/either";
 import { BadRequestError } from "../../shared/errors/bad-request-error";
 import { link } from "../domain/link.type";
 import { createShorterLink, createShorterLinkInput } from "../usecases/create-shorter-link";
+import { deleteShorterLink } from "../usecases/delete-shorter-link";
 import { exportUrlsToCsv } from "../usecases/export-urls-to-csv";
 import { getAllShorterLinks } from "../usecases/get-all-shorter-links";
 import { getOriginalUrlByShortUrl } from "../usecases/get-original-url-by-short-url";
 
 export const linkController: FastifyPluginAsyncZod = async app => {
-
   // Criar link encurtado
   app.post('/shorten', {
     schema: {
@@ -101,7 +101,7 @@ export const linkController: FastifyPluginAsyncZod = async app => {
   });
 
   // Exportar todos os links para um arquivo CSV
-  app.get('/export', {
+  app.post('/export', {
     schema: {
       response: {
         200: z.object({
@@ -170,6 +170,40 @@ export const linkController: FastifyPluginAsyncZod = async app => {
     return reply.code(200).send({
       message: 'Original URL fetched successfully',
       originalUrl: result.right.originalUrl,
+    })
+  })
+
+  // Deletar link encurtado
+  app.delete('/shortUrl/:urlId', {
+    schema: {
+      params: z.object({
+        urlId: z.string(),
+      }),
+      response: {
+        200: z.object({
+          message: z.string(),
+        }),
+      }
+    }
+  }, async (request, reply) => {
+    const { urlId } = request.params
+
+    const result = await deleteShorterLink({
+      shorterLink: urlId,
+    })
+
+
+    if (isLeft(result)) {
+      const error = unwrapEither(result)
+
+      return reply.code(error.statusCode).send({
+        message: error.message
+      })
+    }
+
+
+    return reply.code(200).send({
+      message: 'Link deleted successfully',
     })
   })
 }
