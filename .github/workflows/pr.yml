@@ -23,26 +23,36 @@ jobs:
         uses: pnpm/action-setup@v4
         with:
           version: 9
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: "20"
           cache: "pnpm"
+          cache-dependency-path: "server/pnpm-lock.yaml"
 
       - name: Install dependencies
+        working-directory: ./server
         run: pnpm install
+
+      - name: Build server
+        working-directory: ./server
+        run: pnpm build
 
       # TODO: Add tests
       - name: Run tests
+        working-directory: ./server
         run: |
           echo "No tests"
           #pnpm run test
 
       # TODO: Add lint
       - name: Run lint
+        working-directory: ./server
         run: |
           echo "No lint"
           #pnpm run lint
+
   docker-security:
     name: Docker build & security scan
     runs-on: ubuntu-latest
@@ -64,7 +74,7 @@ jobs:
         id: build
         uses: docker/build-push-action@v6
         with:
-          context: .
+          context: ./server
           load: true
           push: false
           cache-from: type=gha
@@ -77,7 +87,7 @@ jobs:
         run: |
           echo "✅ Docker image built successfully"
           docker images pr-check:latest
-          echo "Image ID: ${{ steps.build.outputs.imageid }}
+          echo "Image ID: ${{ steps.build.outputs.imageid }}"
 
           # Trivy é executado, buscando vulnerabilidades na imagem carregada no Docker local
       - name: Run Trivy vulnerability scanner
