@@ -22,7 +22,6 @@ async function apiRequest<T>(
 ): Promise<T> {
   const url = `${API_BASE_URL}${endpoint}`;
 
-  // Headers padrão
   //@ts-ignore
   const headers: Record<string, string> = {
     ...options.headers,
