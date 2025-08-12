@@ -1,8 +1,9 @@
 resource "aws_lb" "alb" {
-  name            = "${var.application_name}-alb"
-  internal        = false # publico
-  security_groups = [aws_security_group.alb.id]
-  subnets         = module.vpc.public_subnets
+  name               = "${var.application_name}-alb"
+  internal           = false # publico
+  load_balancer_type = "application"
+  security_groups    = [aws_security_group.alb.id]
+  subnets            = module.vpc.public_subnets
 
   enable_deletion_protection = false # caso fosse um produto real, seria true 
 
@@ -41,7 +42,17 @@ resource "aws_lb_target_group" "alb-target-group" {
   }
 }
 
+resource "aws_acm_certificate_validation" "alb-certificate-validation" {
+  certificate_arn         = aws_acm_certificate.alb-certificate.arn
+  validation_record_fqdns = [for record in cloudflare_dns_record.cert_validation : record.hostname] #
 
+
+  timeout {
+    create = "5m"
+  }
+}
+
+# redireciona o trafego para o https
 resource "aws_lb_listener" "alb-listener" {
   load_balancer_arn = aws_lb.alb.arn
   port              = 80
@@ -60,3 +71,19 @@ resource "aws_lb_listener" "alb-listener" {
 }
 
 
+resource "aws_lb_listener" "alb-listener-https" {
+  load_balancer_arn = aws_lb.alb.arn
+
+
+  port     = 443
+  protocol = "HTTPS"
+  region   = var.aws_region
+
+  ssl_policy      = "ELBSecurityPolicy-TLS13-1-2-2021-06"
+  certificate_arn = aws_acm_certificate.alb-certificate.arn
+
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.alb-target-group.arn
+  }
+}
