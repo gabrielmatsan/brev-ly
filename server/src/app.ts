@@ -57,9 +57,12 @@ app.register(fastifySwaggerUi, {
 })
 
 app.register(fastifyCors, {
-  origin: '*',
+  origin: process.env.NODE_ENV === 'production'
+    ? env.FRONTEND_URL
+    : [env.FRONTEND_URL, 'http://localhost:3000', 'http://localhost:5173'],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true
 })
 
 app.register(appRoutes, {
