@@ -112,8 +112,8 @@ resource "aws_cloudfront_response_headers_policy" "security_headers" {
 
   cors_config {
     access_control_allow_credentials = false
-    origin_override = true
-    
+    origin_override                  = true
+
     access_control_allow_headers {
       items = ["Content-Type", "Authorization"]
     }
@@ -178,7 +178,7 @@ module "cloudfront_distribution" {
 
   tags = {
     Environment = var.environment
-    IAC = "true"
+    IAC         = "true"
   }
 }
 

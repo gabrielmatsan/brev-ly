@@ -43,8 +43,8 @@ resource "aws_lb_target_group" "alb-target-group" {
 }
 
 resource "aws_acm_certificate_validation" "alb-certificate-validation" {
-  certificate_arn         = aws_acm_certificate.alb-certificate.arn
-  validation_record_fqdns = [for record in cloudflare_dns_record.cert_validation : record.name] #
+  certificate_arn         = aws_acm_certificate.alb-certificate.arn                             # certificado do alb, para que possamos usar o protocolo HTTPS
+  validation_record_fqdns = [for record in cloudflare_dns_record.cert_validation : record.name] # pegando os nomes dos registros de validação
 
 
   timeouts {

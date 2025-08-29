@@ -45,6 +45,32 @@ resource "aws_iam_role_policy_attachment" "ecs_task_execution_role_policy_attach
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
 
+# Política adicional para CloudWatch Logs
+resource "aws_iam_role_policy" "ecs_cloudwatch_logs_policy" {
+  name = "${var.application_name}-ecs-cloudwatch-logs-policy"
+  role = aws_iam_role.ecs_task_execution_role.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "logs:CreateLogGroup",
+          "logs:CreateLogStream",
+          "logs:PutLogEvents",
+          "logs:DescribeLogGroups",
+          "logs:DescribeLogStreams"
+        ]
+        Resource = [
+          aws_cloudwatch_log_group.ecs_log_group.arn,
+          "${aws_cloudwatch_log_group.ecs_log_group.arn}:*"
+        ]
+      }
+    ]
+  })
+}
+
 
 
 resource "aws_ecs_task_definition" "ecs-task-definition" {
@@ -75,10 +101,14 @@ resource "aws_ecs_task_definition" "ecs-task-definition" {
         credentialsParameter = "arn:aws:secretsmanager:us-east-1:123456789012:secret:my-secret-name"
       }
 
-
-      tags = {
-        Name = "${var.application_name}-ecs-task-definition"
-        IAC  = "true"
+      # Configuração de logs para CloudWatch
+      logConfiguration = {
+        logDriver = "awslogs"
+        options = {
+          awslogs-group         = aws_cloudwatch_log_group.ecs_log_group.name
+          awslogs-region        = var.aws_region
+          awslogs-stream-prefix = "ecs"
+        }
       }
     }
   ])

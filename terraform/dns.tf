@@ -12,11 +12,11 @@ resource "cloudflare_dns_record" "api-dns-record" {
 # Registro DNS para o frontend via CloudFront (usando CNAME flattening do Cloudflare)
 resource "cloudflare_dns_record" "frontend_dns_record" {
   zone_id = var.cloudflare_zone_id
-  name    = "brev-ly.uk"  # Domínio raiz
+  name    = "brev-ly.uk" # Domínio raiz
   content = module.cloudfront_distribution.cloudfront_distribution_domain_name
   type    = "CNAME"
-  ttl     = 1  # TTL automático do Cloudflare
-  proxied = true  # Habilita o proxy do Cloudflare para CNAME flattening
+  ttl     = 1    # TTL automático do Cloudflare
+  proxied = true # Habilita o proxy do Cloudflare para CNAME flattening
 
   depends_on = [module.cloudfront_distribution]
 }
