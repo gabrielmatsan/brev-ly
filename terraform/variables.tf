@@ -40,11 +40,25 @@ variable "cloudflare_zone_id" {
 }
 
 variable "domain_name" {
+  default     = "brev-ly.uk"
   description = "Domain name"
   type        = string
 }
 
 variable "api_domain_name" {
+  default     = "api.brev-ly.uk"
   description = "API domain name"
+  type        = string
+}
+
+variable "frontend_domain" {
+  default     = "brev-ly.uk"
+  description = "Frontend domain name"
+  type        = string
+}
+
+variable "app_version" {
+  default     = "1.0.0"
+  description = "Application version"
   type        = string
 }
