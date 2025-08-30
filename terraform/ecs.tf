@@ -71,6 +71,27 @@ resource "aws_iam_role_policy" "ecs_cloudwatch_logs_policy" {
   })
 }
 
+# Política adicional para Secrets Manager
+resource "aws_iam_role_policy" "ecs_secrets_manager_policy" {
+  name = "${var.application_name}-ecs-secrets-manager-policy"
+  role = aws_iam_role.ecs_task_execution_role.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "secretsmanager:GetSecretValue"
+        ]
+        Resource = [
+          aws_secretsmanager_secret.github_credentials.arn
+        ]
+      }
+    ]
+  })
+}
+
 
 
 resource "aws_ecs_task_definition" "ecs-task-definition" {
