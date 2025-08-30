@@ -74,12 +74,12 @@
       "healthCheck": {
         "command": [
           "CMD-SHELL",
-          "node -e \"const http = require('http'); http.get('http://localhost:8080/health', (res) => process.exit(res.statusCode === 200 ? 0 : 1)).on('error', () => process.exit(1));\""
+          "nc -z localhost 8080"
         ],
         "interval": 30,
-        "timeout": 10,
+        "timeout": 5,
         "retries": 3,
-        "startPeriod": 60
+        "startPeriod": 30
       },
       "logConfiguration": {
         "logDriver": "awslogs",
