@@ -148,6 +148,17 @@ module "cloudfront_distribution" {
     }
   }
 
+  # Aliases para domínios customizados
+  aliases = [var.domain_name, "www.${var.domain_name}"]
+
+  # Certificado SSL
+  viewer_certificate = {
+    acm_certificate_arn            = aws_acm_certificate.alb-certificate.arn
+    ssl_support_method             = "sni-only"
+    minimum_protocol_version       = "TLSv1.2_2021"
+    cloudfront_default_certificate = false
+  }
+
   # Default cache behavior
   default_cache_behavior = {
     target_origin_id           = "S3-${var.application_name}-static-assets"

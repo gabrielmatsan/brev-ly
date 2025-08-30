@@ -16,7 +16,7 @@ resource "cloudflare_dns_record" "frontend_dns_record" {
   content = module.cloudfront_distribution.cloudfront_distribution_domain_name
   type    = "CNAME"
   ttl     = 1    # TTL automático do Cloudflare
-  proxied = true # Habilita o proxy do Cloudflare para CNAME flattening
+  proxied = false # Desabilita o proxy para usar CloudFront diretamente
 
   depends_on = [module.cloudfront_distribution]
 }

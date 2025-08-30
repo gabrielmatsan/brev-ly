@@ -109,38 +109,3 @@ variable "cloudflare_public_url" {
   description = "Cloudflare R2 public URL"
   type        = string
 }
-
-variable "dataport" {
-  description = "Data port"
-  type        = number
-}
-
-variable "database_url" {
-  description = "Database URL"
-  type        = string
-}
-
-variable "cloudflare_account_id" {
-  description = "Cloudflare account ID"
-  type        = string
-}
-
-variable "cloudflare_access_key_id" {
-  description = "Cloudflare access key ID"
-  type        = string
-}
-
-variable "cloudflare_secret_access_key" {
-  description = "Cloudflare secret access key"
-  type        = string
-}
-
-variable "cloudflare_bucket" {
-  description = "Cloudflare bucket"
-  type        = string
-}
-
-variable "cloudflare_public_url" {
-  description = "Cloudflare public URL"
-  type        = string
-}
