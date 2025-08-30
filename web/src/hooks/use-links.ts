@@ -67,13 +67,13 @@ export function useDeleteLink() {
       // Retornar dados anteriores para rollback em caso de erro
       return { previousLinks };
     },
-    onSuccess: (data, deletedId) => {
+    onSuccess: (_data, _deletedId) => {
       // Invalidar e refetch para sincronizar com servidor
       queryClient.invalidateQueries({
         queryKey: ["links"],
       });
     },
-    onError: (error, deletedId, context) => {
+    onError: (error, _deletedId, context) => {
       console.error('Erro ao deletar link:', error);
 
       // Rollback em caso de erro
