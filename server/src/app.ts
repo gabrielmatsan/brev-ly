@@ -71,7 +71,7 @@ app.register(appRoutes, {
 
 app.get('/health', (_, reply) => {
   console.log("Rota de health check: /health")
-  console.log('Health check')
+  console.log('Health check funcionando')
   return reply.status(200).send({
     message: 'OK'
   })
