@@ -210,7 +210,7 @@ export function Home() {
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
               <p className="mt-2 text-gray-600">Carregando links...</p>
             </div>
-          ) : !linksData?.links.length || error?.status === 404 ? (
+          ) : !linksData?.links.length || (error as any)?.status === 404 ? (
             <div className="p-8 text-center">
               <p className="text-gray-600">Nenhum link encontrado.</p>
               <p className="text-sm text-gray-500 mt-1">
