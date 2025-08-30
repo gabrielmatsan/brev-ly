@@ -150,7 +150,7 @@ module "cloudfront_distribution" {
 
   # Default cache behavior
   default_cache_behavior = {
-    target_origin_id           = "s3_bucket"
+    target_origin_id           = "S3-${var.application_name}-static-assets"
     viewer_protocol_policy     = "redirect-to-https"
     compress                   = true
     allowed_methods            = ["GET", "HEAD", "OPTIONS"]
