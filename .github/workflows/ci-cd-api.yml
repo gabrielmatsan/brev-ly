@@ -95,7 +95,7 @@ jobs:
       - name: Verify Docker build
         run: |
           echo "✅ Docker image built successfully"
-          docker images ghcr.io/${{ github.repository }}:${{ steps.generate-tag.outputs.sha }}
+          docker images ghcr.io/${{ github.actor }}:${{ steps.generate-tag.outputs.sha }}
           echo "Image ID: ${{ steps.build.outputs.imageid }}"
 
       - name: Register task definition
