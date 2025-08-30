@@ -82,10 +82,30 @@ jobs:
 
       # Constrói e envia a imagem para o container registry
       - name: Build and push Docker Image
+        id: build
         uses: docker/build-push-action@v6
         with:
           context: ./server # O contexto de construção do Docker ('.' significa o diretório atual)
           push: true # Se true, a imagem Docker será enviada para o registro
           tags: |
             ghcr.io/${{ github.repository }}:${{ steps.generate-tag.outputs.sha }}
+            ghcr.io/${{ github.repository }}:latest
           cache-from: type=gha # Habilita o cache de camadas do Docker para construções mais rápidas
+          cache-to: type=gha,mode=max
+          platforms: linux/amd64
+
+      - name: Verify Docker build
+        run: |
+          echo "✅ Docker image built successfully"
+          docker images ghcr.io/${{ github.repository }}:${{ steps.generate-tag.outputs.sha }}
+          echo "Image ID: ${{ steps.build.outputs.imageid }}"
+
+      - name: Deploy to Amazon ECS
+        id: register-task-definition
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+        with:
+          task-definition: .github/ecs/task-definition.json
+          service: brev-ly-ecs-service
+          cluster: brev-ly-ecs-cluster
+          wait-for-service-stability: true
+          wait-for-minutes: 10
