@@ -10,8 +10,10 @@ on:
 env:
   AWS_REGION: us-east-1
   SOURCE_DIST: ./web/dist
-  AWS_BUCKET_NAME_CDN: brev-ly-cdn-bucket
+  AWS_BUCKET_NAME_CDN: brev-ly-static-production
   BUCKET_NAME: brev-ly-bucket
+  VITE_FRONTEND_URL: https://brev-ly.uk
+  VITE_BACKEND_URL: https://api.brev-ly.uk
 
 jobs:
   code-quality:
@@ -42,8 +44,8 @@ jobs:
         uses: SpicyPizza/create-envfile@v2.0
         with:
           envkey_NODE_ENV: "production"
-          envkey_VITE_FRONTEND_URL: ${{ secrets.VITE_FRONTEND_URL }}
-          envkey_VITE_BACKEND_URL: ${{ secrets.VITE_BACKEND_URL }}
+          envkey_VITE_FRONTEND_URL: ${{ env.VITE_FRONTEND_URL }}
+          envkey_VITE_BACKEND_URL: ${{ env.VITE_BACKEND_URL }}
           directory: "./web" # Pasta onde criar o .env
           file_name: ".env"
           fail_on_empty: true
@@ -70,7 +72,14 @@ jobs:
         run: |
           aws s3 sync ${{ env.SOURCE_DIST }} s3://${{ env.AWS_BUCKET_NAME_CDN }}/ --delete --exclude '*.git*'
 
+      # CloudFront, busca a distribuição por "Static assets for brev-ly"
+      - name: Get CloudFront Distribution ID
+        id: get-distribution-id
+        run: |
+          DISTRIBUTION_ID=$(aws cloudfront list-distributions --query "DistributionList.Items[?Comment=='Static assets for brev-ly'].Id" --output text)
+          echo "distribution_id=$DISTRIBUTION_ID" >> $GITHUB_OUTPUT
+
       - name: Invoke CDN invalidation
         id: invalidation-cdn
         run: |
-          aws cloudfront create-invalidation --distribution-id ${cloudfront_distribution_id} --paths '/*'
+          aws cloudfront create-invalidation --distribution-id ${{ steps.get-distribution-id.outputs.distribution_id }} --paths '/*'

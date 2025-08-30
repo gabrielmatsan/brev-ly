@@ -100,11 +100,18 @@ jobs:
           docker images ghcr.io/${{ github.repository }}:${{ steps.generate-tag.outputs.sha }}
           echo "Image ID: ${{ steps.build.outputs.imageid }}"
 
-      - name: Deploy to Amazon ECS
+      - name: Register task definition
         id: register-task-definition
-        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
         with:
           task-definition: .github/ecs/task-definition.json
+          container-name: brev-ly-ecs-task-definition
+          image: ghcr.io/${{ github.repository }}:latest
+
+      - name: Deploy task definition
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+        with:
+          task-definition: ${{ steps.register-task-definition.outputs.task-definition }}
           service: brev-ly-ecs-service
           cluster: brev-ly-ecs-cluster
           wait-for-service-stability: true
