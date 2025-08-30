@@ -45,7 +45,7 @@
       "logConfiguration": {
         "logDriver": "awslogs",
         "options": {
-          "awslogs-group": "/ecs/brev-ly-ecs-task-definition",
+          "awslogs-group": "/ecs/brev-ly",
           "awslogs-region": "us-east-1",
           "awslogs-stream-prefix": "ecs"
         }
