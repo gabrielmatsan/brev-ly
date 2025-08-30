@@ -12,7 +12,7 @@
       "name": "brev-ly-ecs-task-definition",
       "image": "ghcr.io/gabrielmatsan/brev-ly:latest",
       "repositoryCredentials": {
-        "credentialsParameter": "arn:aws:secretsmanager:us-east-1:842676008268:secret:github-credentials-qIZgTy"
+        "credentialsParameter": "arn:aws:secretsmanager:us-east-1:842676008268:secret:brev-ly-github-credentials-AzwmlC"
       },
       "cpu": 512,
       "memory": 1024,
