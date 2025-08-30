@@ -8,7 +8,19 @@ import type { Link } from "../domain/link.type";
 import { LinkRepository } from "../infra/link.repository";
 
 export const createShorterLinkInput = z.object({
-  originalUrl: z.url(),
+  originalUrl: z.string()
+    .transform((url) => {
+      if (!url.startsWith('https://')) {
+        return `https://${url}`;
+      }
+      return url;
+    })
+    .pipe(
+      z.url()
+        .refine((url) => !url.startsWith('http://'), {
+          message: 'URLs HTTP não são permitidas. Use HTTPS apenas.',
+        })
+    ),
   shortUrl: z.string().nullable().optional(),
 })
 export type CreateShorterLinkInput = z.infer<typeof createShorterLinkInput>

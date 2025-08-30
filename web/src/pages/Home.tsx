@@ -124,14 +124,22 @@ export function Home() {
                 className="block text-sm font-medium text-gray-700 mb-1"
               >
                 URL Original
+                <span className="text-xs text-gray-500 ml-2">
+                  (https:// será adicionado automaticamente)
+                </span>
               </label>
-              <input
-                {...register("originalUrl")}
-                type="url"
-                id="originalUrl"
-                placeholder="https://exemplo.com"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              />
+              <div className="relative">
+                <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-sm">
+                  https://
+                </span>
+                <input
+                  {...register("originalUrl")}
+                  type="text"
+                  id="originalUrl"
+                  placeholder="exemplo.com ou github.com/user/repo"
+                  className="w-full pl-16 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+              </div>
               {errors.originalUrl && (
                 <p className="mt-1 text-sm text-red-600">
                   {errors.originalUrl.message}

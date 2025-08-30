@@ -41,12 +41,14 @@ Uma aplicação moderna de encurtamento de URLs construída com React, Node.js e
 ### ✅ Implementadas
 
 - [x] Encurtamento de URLs com slug personalizado
+- [x] **HTTPS automático**: URLs sem protocolo recebem https:// automaticamente
+- [x] **Segurança**: URLs HTTP são rejeitadas (apenas HTTPS aceito)
 - [x] Listagem de links com paginação
 - [x] Contador de visitas
 - [x] Redirecionamento automático
 - [x] Exclusão de links
 - [x] Exportação para CSV
-- [x] Interface responsiva
+- [x] Interface responsiva com UX otimizada
 - [x] API RESTful com documentação Swagger
 - [x] Health checks
 - [x] SSL/TLS em todos os endpoints
@@ -71,10 +73,22 @@ Uma aplicação moderna de encurtamento de URLs construída com React, Node.js e
 # Health check
 curl https://api.brev-ly.uk/health
 
-# Criar link
+# Criar link (HTTPS automático)
 curl -X POST https://api.brev-ly.uk/v1/link/shorten \
   -H "Content-Type: application/json" \
-  -d '{"originalUrl": "https://example.com", "shortUrl": "exemplo"}'
+  -d '{"originalUrl": "example.com", "shortUrl": "exemplo"}'
+# A API automaticamente converte para: https://example.com
+
+# Criar link com HTTPS explícito (também funciona)
+curl -X POST https://api.brev-ly.uk/v1/link/shorten \
+  -H "Content-Type: application/json" \
+  -d '{"originalUrl": "https://github.com/user/repo", "shortUrl": "repo"}'
+
+# ❌ URLs HTTP são rejeitadas
+curl -X POST https://api.brev-ly.uk/v1/link/shorten \
+  -H "Content-Type: application/json" \
+  -d '{"originalUrl": "http://insecure.com", "shortUrl": "insecure"}'
+# Retorna: 400 Bad Request - "URLs HTTP não são permitidas. Use HTTPS apenas."
 
 # Listar links
 curl "https://api.brev-ly.uk/v1/link/?page=1&limit=10"
@@ -85,6 +99,21 @@ curl -X PATCH https://api.brev-ly.uk/v1/link/shortUrl/exemplo
 # Deletar link
 curl -X DELETE https://api.brev-ly.uk/v1/link/shortUrl/exemplo
 ```
+
+## 🔒 Política de URLs
+
+### ✅ Aceitas automaticamente:
+
+- `example.com` → `https://example.com`
+- `github.com/user/repo` → `https://github.com/user/repo`
+- `subdomain.site.com.br` → `https://subdomain.site.com.br`
+- `https://site.com` → `https://site.com` (mantém como está)
+
+### ❌ Rejeitadas:
+
+- `http://site.com` → **Erro 400**: "URLs HTTP não são permitidas. Use HTTPS apenas."
+- `ftp://site.com` → **Erro 400**: URL inválida
+- `invalid-url` → **Erro 400**: URL inválida
 
 ## 🛠️ Tecnologias
 
