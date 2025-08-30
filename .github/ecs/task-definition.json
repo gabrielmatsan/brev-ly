@@ -1,0 +1,61 @@
+{
+  "family": "brev-ly-ecs-task-definition",
+  "networkMode": "awsvpc",
+  "requiresCompatibilities": [
+    "FARGATE"
+  ],
+  "cpu": "256",
+  "memory": "512",
+  "executionRoleArn": "arn:aws:iam::842676008268:role/brev-ly-ecs-task-execution-role",
+  "containerDefinitions": [
+    {
+      "name": "brev-ly-ecs-task-definition",
+      "image": "ghcr.io/gabrielmatsan/brev-ly:latest",
+      "repositoryCredentials": {
+        "credentialsParameter": "arn:aws:secretsmanager:us-east-1:842676008268:secret:github-credentials-qIZgTy"
+      },
+      "cpu": 230,
+      "memory": 400,
+      "memoryReservation": 400,
+      "portMappings": [
+        {
+          "name": "brev-ly-8080-tcp",
+          "containerPort": 8080,
+          "hostPort": 8080,
+          "protocol": "tcp",
+          "appProtocol": "http"
+        }
+      ],
+      "essential": true,
+      "stopTimeout": 30,
+      "environment": [],
+      "mountPoints": [],
+      "volumesFrom": [],
+      "systemControls": [],
+      "healthCheck": {},
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/brev-ly-ecs-task-definition",
+          "awslogs-region": "us-east-1",
+          "awslogs-stream-prefix": "ecs"
+        }
+      }
+    }
+  ],
+  "volumes": [],
+  "tags": [
+    {
+      "key": "Environment",
+      "value": "production"
+    },
+    {
+      "key": "Name",
+      "value": "brev-ly-ecs-task-definition"
+    },
+    {
+      "key": "Service",
+      "value": "api"
+    }
+  ]
+}
