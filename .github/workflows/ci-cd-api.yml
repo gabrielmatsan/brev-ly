@@ -10,6 +10,7 @@ on:
 env:
   AWS_REGION: us-east-1
   DATAPORT: 8080
+  FRONTEND_URL: https://brev-ly.uk
 
 jobs:
   code-quality:
@@ -50,6 +51,7 @@ jobs:
         uses: SpicyPizza/create-envfile@v2.0
         with:
           envkey_NODE_ENV: "production"
+          envkey_FRONTEND_URL: ${{ env.FRONTEND_URL }}
           envkey_DATAPORT: ${{ env.DATAPORT }}
           envkey_DATABASE_URL: ${{ secrets.DATABASE_URL }}
           envkey_CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}

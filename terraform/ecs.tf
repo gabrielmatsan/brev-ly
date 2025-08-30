@@ -98,7 +98,7 @@ resource "aws_ecs_task_definition" "ecs-task-definition" {
       ]
 
       repositoryCredentials = {
-        credentialsParameter = "arn:aws:secretsmanager:us-east-1:123456789012:secret:my-secret-name"
+        credentialsParameter = aws_secretsmanager_secret.github_credentials.arn
       }
 
       # Configuração de logs para CloudWatch

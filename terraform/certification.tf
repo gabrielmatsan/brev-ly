@@ -1,12 +1,11 @@
 resource "aws_acm_certificate" "alb-certificate" {
-  domain_name       = var.domain_name
+  domain_name       = "api.${var.domain_name}" # Certificado para API
   validation_method = "DNS"
 
   # Subdomínios no mesmo certificado
   subject_alternative_names = [
-    "*.${var.domain_name}",   # Wildcard: *.brev-ly.uk
-    "api.${var.domain_name}", # Específico: api.brev-ly.uk
-    "www.${var.domain_name}"  # Opcional: www.brev-ly.uk
+    "*.${var.domain_name}",  # Wildcard: *.brev-ly.uk
+    "www.${var.domain_name}" # Opcional: www.brev-ly.uk
   ]
 
 
@@ -33,7 +32,7 @@ resource "cloudflare_dns_record" "cert_validation" {
   }
 
   zone_id = var.cloudflare_zone_id
-  name    = trimsuffix(each.value.name, ".${var.domain_name}.") # ← Limpar sufixo
+  name    = trimsuffix(each.value.name, ".${var.domain_name}") # ← Limpar apenas o domínio
   content = trimsuffix(each.value.value, ".")                   # ← Limpar ponto final
   type    = each.value.type
   ttl     = 60    # TTL para o registro (60 segundos)

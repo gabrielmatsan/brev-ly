@@ -10,7 +10,7 @@ on:
 env:
   AWS_REGION: us-east-1
   SOURCE_DIST: ./web/dist
-  AWS_BUCKET_NAME_CDN: brev-ly-static-production
+  AWS_BUCKET_NAME_CDN: brev-ly-static-default
   BUCKET_NAME: brev-ly-bucket
   VITE_FRONTEND_URL: https://brev-ly.uk
   VITE_BACKEND_URL: https://api.brev-ly.uk
