@@ -15,6 +15,9 @@ env:
 jobs:
   continuous-deployment-api:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -86,8 +89,8 @@ jobs:
           context: ./server # O contexto de construção do Docker ('.' significa o diretório atual)
           push: true # Se true, a imagem Docker será enviada para o registro
           tags: |
-            ghcr.io/${{ github.repository }}/brev-ly:${{ steps.generate-tag.outputs.sha }}
-            ghcr.io/${{ github.repository }}/brev-ly:latest
+            ghcr.io/${{ github.repository }}:${{ steps.generate-tag.outputs.sha }}
+            ghcr.io/${{ github.repository }}:latest
           cache-from: type=gha # Habilita o cache de camadas do Docker para construções mais rápidas
           cache-to: type=gha,mode=max
           platforms: linux/amd64
@@ -104,7 +107,7 @@ jobs:
         with:
           task-definition: .github/ecs/task-definition.json
           container-name: brev-ly-ecs-task-definition
-          image: ghcr.io/${{ github.repository }}/brev-ly:latest
+          image: ghcr.io/${{ github.repository }}:latest
 
       - name: Deploy task definition
         uses: aws-actions/amazon-ecs-deploy-task-definition@v1
