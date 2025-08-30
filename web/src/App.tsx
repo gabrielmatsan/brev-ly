@@ -1,9 +1,13 @@
+import { useEffect } from "react";
 import { Route, Routes } from "react-router-dom";
 import { Home } from "./pages/Home";
 import { NotFound } from "./pages/NotFound";
 import { Redirect } from "./pages/Redirect";
 
 function App() {
+  useEffect(() => {
+    document.title = "Brev.ly - Encurtador de URLs";
+  }, []);
   return (
     <Routes>
       {/* Página principal */}
