@@ -16,12 +16,8 @@ env:
   VITE_BACKEND_URL: https://api.brev-ly.uk
 
 jobs:
-  code-quality:
+  continuous-deployment-frontend:
     runs-on: ubuntu-latest
-
-  continuous-deployment:
-    runs-on: ubuntu-latest
-    needs: code-quality
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
