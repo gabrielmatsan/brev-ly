@@ -4,7 +4,7 @@ const options = {
   host: "localhost",
   port: 8080,
   path: "/health",
-  timeout: 3000,
+  timeout: 3000
 };
 
 const request = http.request(options, (res) => {

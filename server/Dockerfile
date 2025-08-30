@@ -14,8 +14,9 @@ RUN pnpm build
 RUN rm -rf node_modules
 RUN pnpm install --prod --frozen-lockfile
 #################
-FROM gcr.io/distroless/nodejs20-debian12 AS runner
+FROM node:20-alpine AS runner
 WORKDIR /usr/src/app
+RUN apk add --no-cache curl
 USER 1000
 COPY --from=build /usr/src/app/node_modules ./node_modules
 COPY --from=build /usr/src/app/dist ./dist
