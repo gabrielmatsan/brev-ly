@@ -75,13 +75,12 @@
         "command": [
           "CMD",
           "node",
-          "-e",
-          "process.exit(0)"
+          "healthcheck.js"
         ],
         "interval": 30,
-        "timeout": 5,
-        "retries": 2,
-        "startPeriod": 30
+        "timeout": 10,
+        "retries": 3,
+        "startPeriod": 60
       },
       "logConfiguration": {
         "logDriver": "awslogs",
