@@ -86,8 +86,8 @@ jobs:
           context: ./server # O contexto de construção do Docker ('.' significa o diretório atual)
           push: true # Se true, a imagem Docker será enviada para o registro
           tags: |
-            ghcr.io/${{ github.actor }}/brev-ly:${{ steps.generate-tag.outputs.sha }}
-            ghcr.io/${{ github.actor }}/brev-ly:latest
+            ghcr.io/${{ github.repository }}/brev-ly:${{ steps.generate-tag.outputs.sha }}
+            ghcr.io/${{ github.repository }}/brev-ly:latest
           cache-from: type=gha # Habilita o cache de camadas do Docker para construções mais rápidas
           cache-to: type=gha,mode=max
           platforms: linux/amd64
@@ -95,7 +95,7 @@ jobs:
       - name: Verify Docker build
         run: |
           echo "✅ Docker image built successfully"
-          docker images ghcr.io/${{ github.actor }}:${{ steps.generate-tag.outputs.sha }}
+          docker images ghcr.io/${{ github.repository }}:${{ steps.generate-tag.outputs.sha }}
           echo "Image ID: ${{ steps.build.outputs.imageid }}"
 
       - name: Register task definition
@@ -104,7 +104,7 @@ jobs:
         with:
           task-definition: .github/ecs/task-definition.json
           container-name: brev-ly-ecs-task-definition
-          image: ghcr.io/${{ github.actor }}/brev-ly:latest
+          image: ghcr.io/${{ github.repository }}/brev-ly:latest
 
       - name: Deploy task definition
         uses: aws-actions/amazon-ecs-deploy-task-definition@v1
