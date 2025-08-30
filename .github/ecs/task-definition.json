@@ -28,7 +28,46 @@
       ],
       "essential": true,
       "stopTimeout": 30,
-      "environment": [],
+      "environment": [
+        {
+          "name": "NODE_ENV",
+          "value": "production"
+        }
+      ],
+      "secrets": [
+        {
+          "name": "DATAPORT",
+          "valueFrom": "arn:aws:secretsmanager:us-east-1:842676008268:secret:brev-ly-github-credentials-AzwmlC:dataport::"
+        },
+        {
+          "name": "DATABASE_URL",
+          "valueFrom": "arn:aws:secretsmanager:us-east-1:842676008268:secret:brev-ly-github-credentials-AzwmlC:database_url::"
+        },
+        {
+          "name": "FRONTEND_URL",
+          "valueFrom": "arn:aws:secretsmanager:us-east-1:842676008268:secret:brev-ly-github-credentials-AzwmlC:frontend_url::"
+        },
+        {
+          "name": "CLOUDFLARE_ACCOUNT_ID",
+          "valueFrom": "arn:aws:secretsmanager:us-east-1:842676008268:secret:brev-ly-github-credentials-AzwmlC:cloudflare_account_id::"
+        },
+        {
+          "name": "CLOUDFLARE_ACCESS_KEY_ID",
+          "valueFrom": "arn:aws:secretsmanager:us-east-1:842676008268:secret:brev-ly-github-credentials-AzwmlC:cloudflare_access_key_id::"
+        },
+        {
+          "name": "CLOUDFLARE_SECRET_ACCESS_KEY",
+          "valueFrom": "arn:aws:secretsmanager:us-east-1:842676008268:secret:brev-ly-github-credentials-AzwmlC:cloudflare_secret_access_key::"
+        },
+        {
+          "name": "CLOUDFLARE_BUCKET",
+          "valueFrom": "arn:aws:secretsmanager:us-east-1:842676008268:secret:brev-ly-github-credentials-AzwmlC:cloudflare_bucket::"
+        },
+        {
+          "name": "CLOUDFLARE_PUBLIC_URL",
+          "valueFrom": "arn:aws:secretsmanager:us-east-1:842676008268:secret:brev-ly-github-credentials-AzwmlC:cloudflare_public_url::"
+        }
+      ],
       "mountPoints": [],
       "volumesFrom": [],
       "systemControls": [],

@@ -33,7 +33,6 @@ resource "cloudflare_dns_record" "cert_validation" {
 
   zone_id = var.cloudflare_zone_id
   name    = trimsuffix(each.value.name, ".${var.domain_name}") # ← Limpar apenas o domínio
-  content = trimsuffix(each.value.value, ".")                   # ← Limpar ponto final
   type    = each.value.type
   ttl     = 60    # TTL para o registro (60 segundos)
   proxied = false # false para o registro não ser proxyado pelo Cloudflare, no caso, usaremos a AWS

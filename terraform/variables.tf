@@ -62,3 +62,85 @@ variable "app_version" {
   description = "Application version"
   type        = string
 }
+
+variable "dataport" {
+  description = "Application port"
+  type        = string
+  default     = "8080"
+}
+
+variable "frontend_url" {
+  description = "Frontend URL"
+  type        = string
+  default     = "https://brev-ly.uk"
+}
+
+variable "database_url" {
+  description = "Database connection URL"
+  type        = string
+  sensitive   = true
+}
+
+variable "cloudflare_account_id" {
+  description = "Cloudflare account ID"
+  type        = string
+  sensitive   = true
+}
+
+variable "cloudflare_access_key_id" {
+  description = "Cloudflare R2 access key ID"
+  type        = string
+  sensitive   = true
+}
+
+variable "cloudflare_secret_access_key" {
+  description = "Cloudflare R2 secret access key"
+  type        = string
+  sensitive   = true
+}
+
+variable "cloudflare_bucket" {
+  description = "Cloudflare R2 bucket name"
+  type        = string
+  default     = "brev-ly-bucket"
+}
+
+variable "cloudflare_public_url" {
+  description = "Cloudflare R2 public URL"
+  type        = string
+}
+
+variable "dataport" {
+  description = "Data port"
+  type        = number
+}
+
+variable "database_url" {
+  description = "Database URL"
+  type        = string
+}
+
+variable "cloudflare_account_id" {
+  description = "Cloudflare account ID"
+  type        = string
+}
+
+variable "cloudflare_access_key_id" {
+  description = "Cloudflare access key ID"
+  type        = string
+}
+
+variable "cloudflare_secret_access_key" {
+  description = "Cloudflare secret access key"
+  type        = string
+}
+
+variable "cloudflare_bucket" {
+  description = "Cloudflare bucket"
+  type        = string
+}
+
+variable "cloudflare_public_url" {
+  description = "Cloudflare public URL"
+  type        = string
+}
