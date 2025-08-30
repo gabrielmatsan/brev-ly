@@ -6,6 +6,7 @@ on:
     paths:
       - "server/**"
       - ".github/workflows/**"
+      - ".github/ecs/**"
 
 env:
   AWS_REGION: us-east-1
