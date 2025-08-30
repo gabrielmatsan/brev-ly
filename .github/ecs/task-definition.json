@@ -4,8 +4,8 @@
   "requiresCompatibilities": [
     "FARGATE"
   ],
-  "cpu": "256",
-  "memory": "512",
+  "cpu": "512",
+  "memory": "1024",
   "executionRoleArn": "arn:aws:iam::842676008268:role/brev-ly-ecs-task-execution-role",
   "containerDefinitions": [
     {
@@ -14,9 +14,9 @@
       "repositoryCredentials": {
         "credentialsParameter": "arn:aws:secretsmanager:us-east-1:842676008268:secret:github-credentials-qIZgTy"
       },
-      "cpu": 230,
-      "memory": 400,
-      "memoryReservation": 400,
+      "cpu": 512,
+      "memory": 1024,
+      "memoryReservation": 1024,
       "portMappings": [
         {
           "name": "brev-ly-8080-tcp",
@@ -32,7 +32,16 @@
       "mountPoints": [],
       "volumesFrom": [],
       "systemControls": [],
-      "healthCheck": {},
+      "healthCheck": {
+        "command": [
+          "CMD-SHELL",
+          "curl -f http://localhost:8080/health || exit 1"
+        ],
+        "interval": 30,
+        "timeout": 10,
+        "retries": 3,
+        "startPeriod": 60
+      },
       "logConfiguration": {
         "logDriver": "awslogs",
         "options": {
