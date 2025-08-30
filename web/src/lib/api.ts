@@ -51,7 +51,7 @@ async function apiRequest<T>(
 export const api = {
   // Criar link encurtado
   async createLink(data: CreateLink): Promise<Link> {
-    return apiRequest<Link>("/shorten", {
+    return apiRequest<Link>("/v1/link/shorten", {
       method: "POST",
       body: JSON.stringify(data),
     });
@@ -60,7 +60,7 @@ export const api = {
   // Listar todos os links
   async getLinks(page = 1, limit = 10): Promise<LinksResponse> {
     try {
-      return await apiRequest<LinksResponse>(`/?page=${page}&limit=${limit}`);
+      return await apiRequest<LinksResponse>(`/v1/link/?page=${page}&limit=${limit}`);
     } catch (error) {
       // Se for erro 404 ou similar, retornar lista vazia
       if (error instanceof ApiError && error.status === 404) {
@@ -81,33 +81,23 @@ export const api = {
 
   // Deletar link
   async deleteLink(id: string): Promise<{ message: string }> {
-    const url = `${API_BASE_URL}/shortUrl/${id}`;
-
-    const response = await fetch(url, {
+    return apiRequest<{ message: string }>(`/v1/link/shortUrl/${id}`, {
       method: "DELETE",
     });
 
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      throw new ApiError(
-        response.status,
-        errorData.message || `HTTP ${response.status}`
-      );
-    }
 
-    return response.json();
   },
 
   // Obter URL original e incrementar visitas
   async getOriginalUrl(shortUrl: string): Promise<RedirectResponse> {
-    return apiRequest<RedirectResponse>(`/shortUrl/${shortUrl}`, {
+    return apiRequest<RedirectResponse>(`/v1/link/shortUrl/${shortUrl}`, {
       method: "PATCH", // PATCH incrementa visitas e retorna URL original
     });
   },
 
   // Exportar links para CSV
   async exportToCsv(): Promise<ExportResponse> {
-    return apiRequest<ExportResponse>("/export", {
+    return apiRequest<ExportResponse>("/v1/link/export", {
       method: "POST",
     });
   },
