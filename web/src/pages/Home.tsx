@@ -50,7 +50,17 @@ export function Home() {
 
   const onSubmit = async (data: CreateLink) => {
     try {
-      await createLinkMutation.mutateAsync(data);
+      // Adiciona https:// automaticamente se não tiver protocolo
+      const processedData = {
+        ...data,
+        originalUrl:
+          data.originalUrl.startsWith("http://") ||
+          data.originalUrl.startsWith("https://")
+            ? data.originalUrl
+            : `https://${data.originalUrl}`,
+      };
+
+      await createLinkMutation.mutateAsync(processedData);
       reset();
     } catch (error) {
       console.error("Erro ao criar link:", error);

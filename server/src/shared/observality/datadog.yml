@@ -1,0 +1,38 @@
+datadog:
+  env:
+    - name: DD_OTLP_CONFIG_TRACES_SPAN_NAME_AS_RESOURCE_NAME
+      value: true
+    - name: DD_OTLP_CONFIG_METRICS_SPAN_NAME_AS_RESOURCE_NAME
+      value: true
+    - name: DD_OTLP_CONFIG_LOGS_SPAN_NAME_AS_RESOURCE_NAME
+      value: true
+    - name: DD_OTLP_CONFIG_EVENTS_SPAN_NAME_AS_RESOURCE_NAME
+      value: true
+    - name: DD_OTLP_CONFIG_LOGS_SPAN_NAME_AS_RESOURCE_NAME
+      value: true
+    - name: DD_OTLP_CONFIG_EVENTS_SPAN_NAME_AS_RESOURCE_NAME
+      value: true
+    - name: DD_OTLP_CONFIG_LOGS_SPAN_NAME_AS_RESOURCE_NAME
+      value: true
+    - name: DD_OTLP_CONFIG_EVENTS_SPAN_NAME_AS_RESOURCE_NAME
+      value: true
+  dogstatsd:
+    port: 8125
+    useHostPort: true
+    nonLocalTraffic: true
+  collectEvents: true
+  apm:
+    portEnabled: true
+  logs:
+    enabled: true
+    containerCollectAll: true
+  networkMonitoring:
+    enabled: true
+  processAgent:
+    enabled: true
+    processCollection: true
+  otlp:
+    receiver:
+      protocols:
+        http:
+          enabled: true

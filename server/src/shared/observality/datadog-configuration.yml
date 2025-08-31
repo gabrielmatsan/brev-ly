@@ -1,0 +1,45 @@
+receivers:
+  otlp:
+    protocols:
+      http:
+
+processors:
+  batch:
+    timeout: 10s
+
+exporters:
+  datadog:
+    api:
+      key: ${DD_API_KEY}
+
+connectors:
+  datadog/connector:
+
+service:
+  telemetry:
+    logs:
+      level: info
+
+  pipelines:
+    metrics:
+      receivers: [otlp, datadog/connector]
+      telemetry:
+        logs:
+          level: info
+      processors: [batch]
+      exporters: [datadog]
+
+    traces:
+      receivers: [otlp]
+      telemetry:
+        logs:
+          level: info
+      processors: [batch]
+      exporters: [datadog/connector]
+    traces/sampling:
+      receivers: [otlp]
+      telemetry:
+        logs:
+          level: info
+      processors: [batch]
+      exporters: [datadog]
