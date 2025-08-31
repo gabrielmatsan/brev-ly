@@ -16,11 +16,9 @@ RUN pnpm install --prod --frozen-lockfile
 #################
 FROM node:20-alpine AS runner
 WORKDIR /usr/src/app
-RUN apk add --no-cache curl
 USER 1000
 COPY --from=build /usr/src/app/node_modules ./node_modules
 COPY --from=build /usr/src/app/dist ./dist
 COPY --from=build /usr/src/app/package.json ./package.json
-COPY --from=build /usr/src/app/healthcheck.js ./healthcheck.js
 EXPOSE 8080
 CMD ["dist/app.js"]
