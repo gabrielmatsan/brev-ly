@@ -22,31 +22,46 @@ const resource = resourceFromAttributes({
 });
 
 // Configuração dos exportadores baseada no ambiente
-const isProduction = true
+const isProduction = true;
 const datadogApiKey = env.DD_API_KEY;
-console.log(datadogApiKey)
+const datadogSite = env.DD_SITE || 'datadoghq.com';
+
+console.log(`[OTEL] Datadog API Key: ${datadogApiKey ? '[CONFIGURADA]' : '[NÃO CONFIGURADA]'}`);
+console.log(`[OTEL] Ambiente: ${env.DD_ENV || 'development'}`);
+console.log(`[OTEL] Site Datadog: ${datadogSite}`);
+
 let traceExporter;
 let metricExporter;
 
-if (isProduction && datadogApiKey) {
-  // Configuração para produção - envia para Datadog via OTLP
+if (datadogApiKey) {
+  console.log(`[OTEL] Configurando exportadores para Datadog`);
+
+  // CORREÇÃO 1: URL correta para traces OTLP no Datadog
   traceExporter = new OTLPTraceExporter({
-    url: `https://trace-intake.${env.DD_SITE || 'datadoghq.com'}/api/v0.2/traces`,
+    url: `https://otlp.${datadogSite}/v1/traces`,
     headers: {
       'DD-API-KEY': datadogApiKey,
     },
+    // Adicione timeout se necessário
+    timeoutMillis: 10000,
   });
 
-  metricExporter = new OTLPMetricExporter({
-    url: `https://api.${env.DD_SITE || 'datadoghq.com'}/api/v2/series`,
-    headers: {
-      'DD-API-KEY': datadogApiKey,
-    },
-  });
+  // CORREÇÃO 2: URL correta para métricas OTLP no Datadog
+  if (isProduction) {
+    metricExporter = new OTLPMetricExporter({
+      url: `https://otlp.${datadogSite}/v1/metrics`,
+      headers: {
+        'DD-API-KEY': datadogApiKey,
+      },
+      timeoutMillis: 10000,
+    });
+    console.log('[OTEL] Métricas habilitadas para produção');
+  } else {
+    console.log('[OTEL] Métricas desabilitadas em desenvolvimento');
+  }
 } else {
-  // Configuração para desenvolvimento - apenas traces no console
+  console.log('[OTEL] DD_API_KEY não encontrada, usando console para traces');
   traceExporter = new ConsoleSpanExporter();
-  metricExporter = null; // Desabilita métricas em desenvolvimento
 }
 
 // Configuração do SDK
@@ -55,35 +70,53 @@ const sdkConfig: any = {
   traceExporter,
   instrumentations: [
     getNodeAutoInstrumentations({
-      // Configurações específicas para instrumentações
+      // Configurações das instrumentações
       '@opentelemetry/instrumentation-fs': {
-        enabled: false, // Desabilita instrumentação de filesystem
+        enabled: false,
       },
       '@opentelemetry/instrumentation-dns': {
-        enabled: false, // Desabilita instrumentação de DNS em desenvolvimento
+        enabled: false,
       },
       '@opentelemetry/instrumentation-http': {
         enabled: true,
-        // Desabilita logs verbosos de requests
         ignoreIncomingRequestHook: (req) => {
           const url = (req as any).url || '';
-          // Ignora health checks e assets estáticos
           return url.includes('/health') ||
             url.includes('/favicon.ico') ||
-            url.includes('/static/');
+            url.includes('/static/') ||
+            url.includes('/metrics');
+        },
+        // CORREÇÃO 3: Configuração adicional para melhor rastreamento
+        requestHook: (span, request) => {
+          span.setAttributes({
+            'http.request.header.user-agent': (request as any).headers?.['user-agent'],
+            'http.request.header.content-type': (request as any).headers?.['content-type'],
+          });
+        },
+      },
+      '@opentelemetry/instrumentation-fastify': {
+        enabled: true,
+        // Configurações específicas para Fastify
+        requestHook: (span, request) => {
+          span.setAttributes({
+            'fastify.route': (request as any).routerPath,
+            'fastify.method': (request as any).method,
+          });
         },
       },
       '@opentelemetry/instrumentation-express': {
-        enabled: true,
+        enabled: false, // Desabilita Express já que usamos Fastify
       },
       '@opentelemetry/instrumentation-pg': {
         enabled: true,
+        // Evita capturar queries sensíveis
+        addSqlCommenterCommentToQueries: false,
       },
     }),
   ],
 };
 
-// Só adiciona métricas em produção
+// Adiciona reader de métricas apenas se configurado
 if (isProduction && metricExporter) {
   sdkConfig.metricReader = new PeriodicExportingMetricReader({
     exporter: metricExporter,
@@ -91,13 +124,25 @@ if (isProduction && metricExporter) {
   });
 }
 
+// Inicialização do SDK
 const sdk = new NodeSDK(sdkConfig);
 
-// Inicializa o SDK
-sdk.start();
+// Tratamento de erros na inicialização
+process.on('SIGTERM', () => {
+  console.log('[OTEL] Desligando OpenTelemetry...');
+  sdk.shutdown()
+    .then(() => console.log('[OTEL] OpenTelemetry desligado com sucesso'))
+    .catch((error) => console.error('[OTEL] Erro ao desligar OpenTelemetry:', error))
+    .finally(() => process.exit(0));
+});
 
-console.log(`[OTEL] OpenTelemetry iniciado`);
-console.log(`[OTEL] Ambiente: ${env.NODE_ENV || 'development'}`);
-console.log(`[OTEL] Métricas: ${isProduction && metricExporter ? 'Habilitadas' : 'Desabilitadas'}`);
+try {
+  sdk.start();
+  console.log(`[OTEL] OpenTelemetry iniciado com sucesso!`);
+  console.log(`[OTEL] Traces: ${datadogApiKey ? 'Enviando para Datadog' : 'Console apenas'}`);
+  console.log(`[OTEL] Métricas: ${isProduction && metricExporter ? 'Habilitadas (Datadog)' : 'Desabilitadas'}`);
+} catch (error) {
+  console.error('[OTEL] Erro ao inicializar OpenTelemetry:', error);
+}
 
 export { sdk };
