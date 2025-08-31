@@ -24,9 +24,10 @@ const envSchema = z.object({
   DD_LOGS_INJECTION: z.coerce.boolean().default(true),
   DD_RUNTIME_METRICS_ENABLED: z.coerce.boolean().default(true),
   DD_PROFILING_ENABLED: z.coerce.boolean().default(false),
-  DD_API_KEY: z.string(),
-  DD_SITE: z.string(),
-  DD_TAGS: z.string().default("team:backend,region:us-east-1"),
+  DD_API_KEY: z.string().optional(),
+  DD_SITE: z.string().optional(),
+  DD_TAGS: z.string().default("team:backend,region:us-east-1").optional(),
+  DATADOG_TAGS: z.string().default("team:backend,region:us-east-1").optional(),
 });
 
 export const env = envSchema.parse(process.env);

@@ -76,7 +76,7 @@
           "valueFrom": "arn:aws:secretsmanager:us-east-1:842676008268:secret:brev-ly-github-credentials-AzwmlC:datadog_site::"
         },
         {
-          "name": "DATADOG_TAGS",
+          "name": "DD_TAGS",
           "valueFrom": "arn:aws:secretsmanager:us-east-1:842676008268:secret:brev-ly-github-credentials-AzwmlC:datadog_tags::"
         },
         {
