@@ -5,11 +5,27 @@ const envSchema = z.object({
   FRONTEND_URL: z.url(),
   DATAPORT: z.coerce.number().default(3000),
   DATABASE_URL: z.url(),
+
+
   CLOUDFLARE_ACCOUNT_ID: z.string(),
   CLOUDFLARE_ACCESS_KEY_ID: z.string(),
   CLOUDFLARE_SECRET_ACCESS_KEY: z.string(),
   CLOUDFLARE_BUCKET: z.string(),
   CLOUDFLARE_PUBLIC_URL: z.string(),
+
+
+  DD_SERVICE: z.string(),
+  DD_ENV: z.string(),
+  DD_VERSION: z.string(),
+  DD_TRACE_ENABLED: z.coerce.boolean().default(true),
+  DD_TRACE_DEBUG: z.coerce.boolean().default(false),
+  DD_TRACE_STARTUP_LOGS: z.coerce.boolean().default(true),
+  DD_LOGS_INJECTION: z.coerce.boolean().default(true),
+  DD_RUNTIME_METRICS_ENABLED: z.coerce.boolean().default(true),
+  DD_PROFILING_ENABLED: z.coerce.boolean().default(false),
+  DD_API_KEY: z.string(),
+  DD_SITE: z.string(),
+  DD_TAGS: z.string().default("team:backend,region:us-east-1"),
 });
 
 export const env = envSchema.parse(process.env);

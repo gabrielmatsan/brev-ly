@@ -1,3 +1,4 @@
+import { loggerUtils } from "@/shared/observality/logger";
 import type { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import { type FastifyPluginAsyncZod } from "fastify-type-provider-zod";
 import { z } from "zod";
@@ -42,6 +43,7 @@ export const linkController: FastifyPluginAsyncZod = async app => {
 
     if (isLeft(result)) {
       const error = result.left
+      loggerUtils.logError(error)
       return reply.code(error.statusCode).send({
         message: error.message
       })
@@ -87,7 +89,7 @@ export const linkController: FastifyPluginAsyncZod = async app => {
     if (isLeft(result)) {
       const error = unwrapEither(result)
 
-      console.log(error)
+      loggerUtils.logError(error as Error)
 
       return reply.code(500).send({
         message: 'Internal Server Error'
@@ -160,8 +162,7 @@ export const linkController: FastifyPluginAsyncZod = async app => {
 
     if (isLeft(result)) {
       const error = unwrapEither(result)
-
-      console.error(error)
+      loggerUtils.logError(error)
       return reply.code(error.statusCode ?? 500).send({
         message: error.message ?? 'Internal Server Error'
       })
