@@ -94,23 +94,11 @@ const sdkConfig: any = {
           });
         },
       },
-      '@opentelemetry/instrumentation-fastify': {
-        enabled: true,
-        // Configurações específicas para Fastify
-        requestHook: (span, request) => {
-          span.setAttributes({
-            'fastify.route': (request as any).routerPath,
-            'fastify.method': (request as any).method,
-          });
-        },
-      },
       '@opentelemetry/instrumentation-express': {
         enabled: false, // Desabilita Express já que usamos Fastify
       },
       '@opentelemetry/instrumentation-pg': {
         enabled: true,
-        // Evita capturar queries sensíveis
-        addSqlCommenterCommentToQueries: false,
       },
     }),
   ],

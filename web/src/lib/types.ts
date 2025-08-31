@@ -13,7 +13,18 @@ export type Link = z.infer<typeof linkSchema>;
 
 // Schema para criar um link
 export const createLinkSchema = z.object({
-  originalUrl: z.url(),
+  originalUrl: z.string()
+    .min(1, "URL é obrigatória")
+    .refine((url) => {
+      // Permite URLs com ou sem protocolo
+      if (url.startsWith('http://') || url.startsWith('https://')) {
+        return z.string().url().safeParse(url).success;
+      }
+      // Verifica se é uma URL válida após adicionar https://
+      return z.string().url().safeParse(`https://${url}`).success;
+    }, {
+      message: "URL deve ser válida (ex: exemplo.com ou https://exemplo.com)"
+    }),
   shortUrl: z.string().min(1, "URL encurtada é obrigatória"),
 });
 
