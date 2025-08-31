@@ -14,9 +14,9 @@ const envSchema = z.object({
   CLOUDFLARE_PUBLIC_URL: z.string(),
 
 
-  DD_SERVICE: z.string(),
-  DD_ENV: z.string(),
-  DD_VERSION: z.string(),
+  DD_SERVICE: z.string().default("brev-ly-api"),
+  DD_ENV: z.string().default("development"),
+  DD_VERSION: z.string().default("1.0.0"),
   DD_TRACE_ENABLED: z.coerce.boolean().default(true),
   DD_TRACE_DEBUG: z.coerce.boolean().default(false),
   DD_TRACE_STARTUP_LOGS: z.coerce.boolean().default(true),
