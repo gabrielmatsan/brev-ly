@@ -1,8 +1,20 @@
 datadog:
   env:
-    # If set to true the OpenTelemetry span name will used in the Datadog resource name.
-    # If set to false the resource name will be filled with the instrumentation library name + span kind.
     - name: DD_OTLP_CONFIG_TRACES_SPAN_NAME_AS_RESOURCE_NAME
+      value: true
+    - name: DD_OTLP_CONFIG_METRICS_SPAN_NAME_AS_RESOURCE_NAME
+      value: true
+    - name: DD_OTLP_CONFIG_LOGS_SPAN_NAME_AS_RESOURCE_NAME
+      value: true
+    - name: DD_OTLP_CONFIG_EVENTS_SPAN_NAME_AS_RESOURCE_NAME
+      value: true
+    - name: DD_OTLP_CONFIG_LOGS_SPAN_NAME_AS_RESOURCE_NAME
+      value: true
+    - name: DD_OTLP_CONFIG_EVENTS_SPAN_NAME_AS_RESOURCE_NAME
+      value: true
+    - name: DD_OTLP_CONFIG_LOGS_SPAN_NAME_AS_RESOURCE_NAME
+      value: true
+    - name: DD_OTLP_CONFIG_EVENTS_SPAN_NAME_AS_RESOURCE_NAME
       value: true
   dogstatsd:
     port: 8125
