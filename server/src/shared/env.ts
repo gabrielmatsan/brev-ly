@@ -14,6 +14,7 @@ const envSchema = z.object({
   CLOUDFLARE_PUBLIC_URL: z.string(),
 
 
+  // Datadog
   DD_SERVICE: z.string().default("brev-ly-api"),
   DD_ENV: z.string().default("development"),
   DD_VERSION: z.string().default("1.0.0"),
