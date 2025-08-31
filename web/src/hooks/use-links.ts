@@ -3,7 +3,12 @@ import { api } from "../lib/api";
 import { queryKeys } from "../lib/query-client";
 import type { CreateLink } from "../lib/types";
 
-// Hook para buscar links
+/** 
+ * Hook para buscar links
+ * @param page - Página
+ * @param limit - Limite
+ * @returns Query para buscar links
+ */
 export function useLinks(page = 1, limit = 10) {
   return useQuery({
     queryKey: queryKeys.links(page, limit),
@@ -23,7 +28,10 @@ export function useLinks(page = 1, limit = 10) {
   });
 }
 
-// Hook para criar link
+/**
+ * Hook para criar link
+ * @returns Mutation para criar link
+ */
 export function useCreateLink() {
   const queryClient = useQueryClient();
 
@@ -38,7 +46,10 @@ export function useCreateLink() {
   });
 }
 
-// Hook para deletar link
+/**
+ * Hook para deletar link
+ * @returns Mutation para deletar link
+ */
 export function useDeleteLink() {
   const queryClient = useQueryClient();
 
@@ -46,7 +57,7 @@ export function useDeleteLink() {
     mutationFn: (id: string) => {
       return api.deleteLink(id);
     },
-    // Atualização otimista - remove da lista imediatamente
+    // Otimista
     onMutate: async (deletedId) => {
       // Cancelar queries em andamento para evitar conflitos
       await queryClient.cancelQueries({ queryKey: ["links"] });
@@ -64,7 +75,6 @@ export function useDeleteLink() {
         };
       });
 
-      // Retornar dados anteriores para rollback em caso de erro
       return { previousLinks };
     },
     onSuccess: (_data, _deletedId) => {
@@ -90,7 +100,10 @@ export function useDeleteLink() {
   });
 }
 
-// Hook para exportar CSV
+/**
+ * Hook para exportar CSV
+ * @returns Mutation para exportar CSV
+ */
 export function useExportCsv() {
   return useMutation({
     mutationFn: () => api.exportToCsv(),
@@ -101,12 +114,16 @@ export function useExportCsv() {
   });
 }
 
-// Hook para redirecionamento
+/**
+ * Hook para redirecionamento
+ * @param shortUrl - Short URL
+ * @returns Query para redirecionamento
+ */
 export function useRedirect(shortUrl: string) {
   return useQuery({
     queryKey: queryKeys.redirect(shortUrl),
     queryFn: () => api.getOriginalUrl(shortUrl),
     enabled: !!shortUrl,
-    retry: false, // Não retry para redirecionamento
+    retry: false,
   });
 } 
