@@ -36,7 +36,6 @@ const baseConfig = {
 let loggerConfig;
 
 if (isProduction && datadogApiKey) {
-  // Configuração para produção - formato JSON para Datadog
   loggerConfig = {
     ...baseConfig,
     // Em produção, usa formato JSON estruturado para melhor integração com Datadog
