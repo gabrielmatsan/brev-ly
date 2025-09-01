@@ -66,6 +66,54 @@
         {
           "name": "CLOUDFLARE_PUBLIC_URL",
           "valueFrom": "arn:aws:secretsmanager:us-east-1:842676008268:secret:brev-ly-github-credentials-AzwmlC:cloudflare_public_url::"
+        },
+        {
+          "name": "DD_API_KEY",
+          "valueFrom": "arn:aws:secretsmanager:us-east-1:842676008268:secret:brev-ly-github-credentials-AzwmlC:datadog_api_key::"
+        },
+        {
+          "name": "DD_SITE",
+          "valueFrom": "arn:aws:secretsmanager:us-east-1:842676008268:secret:brev-ly-github-credentials-AzwmlC:datadog_site::"
+        },
+        {
+          "name": "DD_TAGS",
+          "valueFrom": "arn:aws:secretsmanager:us-east-1:842676008268:secret:brev-ly-github-credentials-AzwmlC:datadog_tags::"
+        },
+        {
+          "name": "DD_SERVICE",
+          "valueFrom": "arn:aws:secretsmanager:us-east-1:842676008268:secret:brev-ly-github-credentials-AzwmlC:datadog_service::"
+        },
+        {
+          "name": "DD_ENV",
+          "valueFrom": "arn:aws:secretsmanager:us-east-1:842676008268:secret:brev-ly-github-credentials-AzwmlC:datadog_env::"
+        },
+        {
+          "name": "DD_VERSION",
+          "valueFrom": "arn:aws:secretsmanager:us-east-1:842676008268:secret:brev-ly-github-credentials-AzwmlC:datadog_version::"
+        },
+        {
+          "name": "DD_TRACE_ENABLED",
+          "valueFrom": "arn:aws:secretsmanager:us-east-1:842676008268:secret:brev-ly-github-credentials-AzwmlC:datadog_trace_enabled::"
+        },
+        {
+          "name": "DD_TRACE_DEBUG",
+          "valueFrom": "arn:aws:secretsmanager:us-east-1:842676008268:secret:brev-ly-github-credentials-AzwmlC:datadog_trace_debug::"
+        },
+        {
+          "name": "DD_TRACE_STARTUP_LOGS",
+          "valueFrom": "arn:aws:secretsmanager:us-east-1:842676008268:secret:brev-ly-github-credentials-AzwmlC:datadog_trace_startup_logs::"
+        },
+        {
+          "name": "DD_LOGS_INJECTION",
+          "valueFrom": "arn:aws:secretsmanager:us-east-1:842676008268:secret:brev-ly-github-credentials-AzwmlC:datadog_logs_injection::"
+        },
+        {
+          "name": "DD_RUNTIME_METRICS_ENABLED",
+          "valueFrom": "arn:aws:secretsmanager:us-east-1:842676008268:secret:brev-ly-github-credentials-AzwmlC:datadog_runtime_metrics_enabled::"
+        },
+        {
+          "name": "DD_PROFILING_ENABLED",
+          "valueFrom": "arn:aws:secretsmanager:us-east-1:842676008268:secret:brev-ly-github-credentials-AzwmlC:datadog_profiling_enabled::"
         }
       ],
       "mountPoints": [],

@@ -109,3 +109,64 @@ variable "cloudflare_public_url" {
   description = "Cloudflare R2 public URL"
   type        = string
 }
+
+variable "datadog_api_key" {
+  description = "Datadog API key"
+  type        = string
+  sensitive   = true
+}
+
+variable "datadog_site" {
+  description = "Datadog site"
+  type        = string
+}
+
+variable "datadog_tags" {
+  description = "Datadog tags"
+  type        = string
+}
+
+variable "datadog_service" {
+  description = "Datadog service"
+  type        = string
+}
+
+variable "datadog_env" {
+  description = "Datadog environment"
+  type        = string
+}
+
+variable "datadog_version" {
+  description = "Datadog version"
+  type        = string
+}
+
+variable "datadog_trace_enabled" {
+  description = "Datadog trace enabled"
+  type        = bool
+}
+
+variable "datadog_trace_debug" {
+  description = "Datadog trace debug"
+  type        = bool
+}
+
+variable "datadog_trace_startup_logs" {
+  description = "Datadog trace startup logs"
+  type        = bool
+}
+
+variable "datadog_logs_injection" {
+  description = "Datadog logs injection"
+  type        = bool
+}
+
+variable "datadog_runtime_metrics_enabled" {
+  description = "Datadog runtime metrics enabled"
+  type        = bool
+}
+
+variable "datadog_profiling_enabled" {
+  description = "Datadog profiling enabled"
+  type        = bool
+}

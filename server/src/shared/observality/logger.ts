@@ -1,5 +1,6 @@
 import { trace } from '@opentelemetry/api';
 import pino from "pino";
+import { env } from '../env';
 
 const isProduction = process.env.NODE_ENV === 'production';
 const datadogApiKey = process.env.DATADOG_API_KEY;
@@ -22,13 +23,13 @@ const baseConfig = {
         span_id: spanContext.spanId,
         service: 'brev-ly-api',
         version: '1.0.0',
-        env: process.env.DD_ENV || 'development',
+        env: env.DD_ENV || 'development',
       };
     }
     return {
       service: 'brev-ly-api',
       version: '1.0.0',
-      env: process.env.DD_ENV || 'development',
+      env: env.DD_ENV || 'development',
     };
   },
 };
@@ -36,15 +37,13 @@ const baseConfig = {
 let loggerConfig;
 
 if (isProduction && datadogApiKey) {
-  // Configuração para produção - formato JSON para Datadog
   loggerConfig = {
     ...baseConfig,
-    // Em produção, usa formato JSON estruturado para melhor integração com Datadog
     timestamp: pino.stdTimeFunctions.isoTime,
     messageKey: 'message',
     errorKey: 'error',
     base: {
-      hostname: process.env.DD_HOSTNAME || require('os').hostname(),
+      hostname: require('os').hostname(),
       pid: process.pid,
     },
   };

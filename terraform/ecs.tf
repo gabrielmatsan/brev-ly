@@ -98,8 +98,8 @@ resource "aws_ecs_task_definition" "ecs-task-definition" {
   family                   = "${var.application_name}-ecs-task-definition"
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
-  cpu                      = "256"
-  memory                   = "512"
+  cpu                      = "512"
+  memory                   = "1024"
   execution_role_arn       = aws_iam_role.ecs_task_execution_role.arn
   task_role_arn            = aws_iam_role.ecs_task_execution_role.arn
 
@@ -133,14 +133,37 @@ resource "aws_ecs_task_definition" "ecs-task-definition" {
       }
     }
   ])
+
+  tags = {
+    Name        = "${var.application_name}-ecs-task-definition"
+    Environment = var.environment
+    Service     = "api"
+    IAC         = "true"
+  }
+
+  lifecycle {
+    ignore_changes = [
+      # Permite que CI/CD atualize apenas a imagem do container
+      container_definitions,
+      # Ignora mudanças na revisão (cada deploy cria nova revisão)
+      revision,
+    ]
+  }
 }
 
 
 
+# Data source para pegar a última versão do task definition
+data "aws_ecs_task_definition" "latest" {
+  task_definition = aws_ecs_task_definition.ecs-task-definition.family
+  depends_on      = [aws_ecs_task_definition.ecs-task-definition]
+}
+
 resource "aws_ecs_service" "ecs-service" {
   name            = "${var.application_name}-ecs-service"
   cluster         = aws_ecs_cluster.ecs-cluster.id
-  task_definition = aws_ecs_task_definition.ecs-task-definition.arn
+  # Usa sempre a versão mais recente disponível
+  task_definition = data.aws_ecs_task_definition.latest.arn
   desired_count   = 1 # numero de containers
   launch_type     = "FARGATE"
 
